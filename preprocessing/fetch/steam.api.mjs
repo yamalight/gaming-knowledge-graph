@@ -71,7 +71,7 @@ export const getSteamReviewsApi = async ({
   // increase progress bar
   progress.tick(newReviews.length);
 
-  if (newCursor?.length > 0) {
+  if (newCursor?.length > 0 && newCursor !== cursor) {
     return getSteamReviewsApi({
       appId,
       cursor: newCursor,
