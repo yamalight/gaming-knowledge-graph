@@ -10,6 +10,8 @@
   "author": "Tim Ermilov <yamalight@gmail.com> (http://codezen.dev/)",
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12"
+    "@mozilla/readability": "^0.4.2",
+    "cheerio": "^1.0.0-rc.12",
+    "jsdom": "^20.0.0"
   }
 }

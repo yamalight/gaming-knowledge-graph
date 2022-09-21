@@ -1,3 +1,5 @@
+import { extractMainContentFromURL } from './extract-main-content.mjs';
+
 const options = {
   method: 'GET',
   headers: {
@@ -43,6 +45,15 @@ const getGameReviews = async ({ game, allReviews = [], skip = 0 }) => {
 
 export const getOpenCriticReviews = async (gameName) => {
   const game = await gameInfoByName(gameName);
-  const reviews = await getGameReviews({ game });
+  const reviewLinks = await getGameReviews({ game });
+  const reviews = await Promise.all(
+    reviewLinks.map(async (reviewData) => {
+      const content = await extractMainContentFromURL(reviewData.externalUrl);
+      return {
+        opencritic: reviewData,
+        ...content,
+      };
+    })
+  );
   return reviews;
 };
