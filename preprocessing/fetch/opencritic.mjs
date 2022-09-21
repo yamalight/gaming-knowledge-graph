@@ -1,3 +1,4 @@
+import ProgressBar from 'progress';
 import { extractMainContentFromURL } from '../extract/content.mjs';
 
 const options = {
@@ -46,10 +47,18 @@ const getGameReviews = async ({ game, allReviews = [], skip = 0 }) => {
 export const getOpenCriticReviews = async (gameName) => {
   const game = await gameInfoByName(gameName);
   const reviewLinks = await getGameReviews({ game });
+
+  // create progress bar if needed
+  const progress = new ProgressBar(
+    ':bar :percent [:current / :total] | :elapsed - :eta ( :rate )  ',
+    { total: reviewLinks.length }
+  );
+
   const reviews = await Promise.all(
     reviewLinks.map(async (reviewData) => {
       try {
         const content = await extractMainContentFromURL(reviewData.externalUrl);
+        progress.tick();
         return {
           opencritic: reviewData,
           ...content,
