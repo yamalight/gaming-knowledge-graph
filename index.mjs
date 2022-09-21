@@ -1,8 +1,19 @@
 import { writeFile } from 'node:fs/promises';
+import { getOpenCriticReviews } from './preprocessing/fetch-opencritic-reviews.mjs';
 import { getSteamReviewsApi } from './preprocessing/fetch-steam-reviews-api.mjs';
-// import { getSteamReviews } from './preprocessing/fetch-steam-reviews.mjs';
 
-// const res = await getSteamReviews({ appId: '1150760' }); // Gloomwood - ~1000 reviews
-const res = await getSteamReviewsApi({ appId: '1666250' }); // Circus Electrique ~35 reviews
+const steamReviews = await getSteamReviewsApi({ appId: '1602080' }); // Soulstice
+const openCriticReviews = await getOpenCriticReviews('Soulstice');
 
-await writeFile('./reviews.json', JSON.stringify(res, null, 2), 'utf-8');
+await writeFile(
+  './reviews.json',
+  JSON.stringify(
+    {
+      steamReviews,
+      openCriticReviews,
+    },
+    null,
+    2
+  ),
+  'utf-8'
+);
