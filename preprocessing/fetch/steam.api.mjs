@@ -44,12 +44,13 @@ export const getSteamReviewsApi = async ({
       total_negative,
       total_reviews,
     } = query_summary;
-    gameResults.num_reviews = num_reviews;
-    gameResults.review_score = review_score;
-    gameResults.review_score_desc = review_score_desc;
-    gameResults.total_positive = total_positive;
-    gameResults.total_negative = total_negative;
-    gameResults.total_reviews = total_reviews;
+    gameResults.num_reviews = num_reviews ?? gameResults.num_reviews;
+    gameResults.review_score = review_score ?? gameResults.review_score;
+    gameResults.review_score_desc =
+      review_score_desc ?? gameResults.review_score_desc;
+    gameResults.total_positive = total_positive ?? gameResults.total_positive;
+    gameResults.total_negative = total_negative ?? gameResults.total_negative;
+    gameResults.total_reviews = total_reviews ?? gameResults.total_reviews;
   }
   // add reviews to list
   gameResults.reviews = gameResults.reviews.concat(newReviews);
@@ -59,7 +60,7 @@ export const getSteamReviewsApi = async ({
     `Fetched ${gameResults.reviews.length} of ${gameResults.total_reviews} reviews. Continuing to next page...`
   );
 
-  if (cursor?.length > 0) {
+  if (newCursor?.length > 0) {
     return getSteamReviewsApi({
       appId,
       cursor: newCursor,
@@ -69,6 +70,3 @@ export const getSteamReviewsApi = async ({
 
   return gameResults;
 };
-
-const res = await getSteamReviewsApi({ appId: '1666250' });
-console.log(res);
