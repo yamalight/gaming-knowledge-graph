@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
-import { getOpenCriticReviews } from './preprocessing/fetch-opencritic-reviews.mjs';
-import { getSteamReviewsApi } from './preprocessing/fetch-steam-reviews-api.mjs';
+import { getOpenCriticReviews } from './preprocessing/fetch/opencritic.mjs';
+import { getSteamReviewsApi } from './preprocessing/fetch/steam.api.mjs';
 
 const steamReviews = await getSteamReviewsApi({ appId: '1602080' }); // Soulstice
 const openCriticReviews = await getOpenCriticReviews('Soulstice');

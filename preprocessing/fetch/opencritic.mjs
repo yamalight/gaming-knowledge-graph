@@ -1,4 +1,4 @@
-import { extractMainContentFromURL } from './extract-main-content.mjs';
+import { extractMainContentFromURL } from '../extract/content.mjs';
 
 const options = {
   method: 'GET',
