@@ -11,7 +11,9 @@
   "license": "MIT",
   "dependencies": {
     "@mozilla/readability": "^0.4.2",
+    "camelcase": "^7.0.0",
     "cheerio": "^1.0.0-rc.12",
-    "jsdom": "^20.0.0"
+    "jsdom": "^20.0.0",
+    "progress": "^2.0.3"
   }
 }

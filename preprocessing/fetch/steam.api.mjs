@@ -1,4 +1,5 @@
 import { setTimeout } from 'node:timers/promises';
+import ProgressBar from 'progress';
 
 const SLEEP_TIMEOUT = 100;
 
@@ -16,6 +17,7 @@ export const getSteamReviewsApi = async ({
   appId,
   cursor,
   gameResults = defaultGameReview,
+  progress,
 }) => {
   const baseUrl = `https://store.steampowered.com/appreviews/${appId}`;
   const params = new URLSearchParams({
@@ -44,6 +46,16 @@ export const getSteamReviewsApi = async ({
       total_negative,
       total_reviews,
     } = query_summary;
+
+    // create progress bar if needed
+    if (total_reviews) {
+      progress = new ProgressBar(
+        ':bar :percent [:current / :total] | :elapsed - :eta ( :rate )  ',
+        { total: total_reviews }
+      );
+    }
+
+    // assing values
     gameResults.num_reviews = num_reviews ?? gameResults.num_reviews;
     gameResults.review_score = review_score ?? gameResults.review_score;
     gameResults.review_score_desc =
@@ -56,15 +68,15 @@ export const getSteamReviewsApi = async ({
   gameResults.reviews = gameResults.reviews.concat(newReviews);
   await setTimeout(SLEEP_TIMEOUT);
 
-  console.log(
-    `Fetched ${gameResults.reviews.length} of ${gameResults.total_reviews} reviews. Continuing to next page...`
-  );
+  // increase progress bar
+  progress.tick(newReviews.length);
 
   if (newCursor?.length > 0) {
     return getSteamReviewsApi({
       appId,
       cursor: newCursor,
       gameResults,
+      progress,
     });
   }
 
