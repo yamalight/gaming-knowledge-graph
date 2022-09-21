@@ -48,11 +48,18 @@ export const getOpenCriticReviews = async (gameName) => {
   const reviewLinks = await getGameReviews({ game });
   const reviews = await Promise.all(
     reviewLinks.map(async (reviewData) => {
-      const content = await extractMainContentFromURL(reviewData.externalUrl);
-      return {
-        opencritic: reviewData,
-        ...content,
-      };
+      try {
+        const content = await extractMainContentFromURL(reviewData.externalUrl);
+        return {
+          opencritic: reviewData,
+          ...content,
+        };
+      } catch (err) {
+        return {
+          opencritic: reviewData,
+          error: err,
+        };
+      }
     })
   );
   return reviews;
