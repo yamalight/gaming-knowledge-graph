@@ -1,3 +1,4 @@
+import { readFile, stat, writeFile } from 'node:fs/promises';
 import ProgressBar from 'progress';
 import { extractMainContentFromURL } from '../extract/content.mjs';
 
@@ -19,6 +20,17 @@ const gameInfoByName = async (gameName) => {
 };
 
 const getGameReviews = async ({ game, allReviews = [], skip = 0 }) => {
+  const filePath = `./dataset/${game.id}-oc-api.json`;
+  try {
+    await stat(filePath);
+    console.log('Game OC', game.id, 'already processed, skipping...');
+    const dataStr = await readFile(filePath, 'utf-8');
+    const data = JSON.parse(dataStr);
+    return data;
+  } catch (err) {
+    console.log('Processing', game.id);
+  }
+
   const url = `https://opencritic-api.p.rapidapi.com/review/game/${game.id}?skip=${skip}`;
 
   const options = {
@@ -32,6 +44,8 @@ const getGameReviews = async ({ game, allReviews = [], skip = 0 }) => {
   const reviews = await fetch(url, options).then((res) => res.json());
   if (reviews.length === 0) {
     console.log(`Done fetching`);
+    await writeFile(filePath, JSON.stringify(allReviews, null, 2), 'utf-8');
+    console.log(`Saved`, game.id);
     return allReviews;
   }
 
@@ -71,5 +85,7 @@ export const getOpenCriticReviews = async (gameName) => {
       }
     })
   );
-  return reviews;
+  // for some reason not using structured cloning sometimes results in circular JSON
+  // (even though we don't really have any circular structures?)
+  return structuredClone(reviews);
 };

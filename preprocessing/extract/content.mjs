@@ -7,10 +7,11 @@ export const extractMainContentFromURL = async (url) => {
   const reader = new Readability(doc.window.document);
   const parsed = reader.parse();
   if (!parsed) {
-    return { html };
+    return { url, html };
   }
   const { title, lang, textContent, excerpt } = parsed;
   return {
+    url,
     title,
     excerpt,
     lang,
