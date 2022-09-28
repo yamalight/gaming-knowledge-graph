@@ -1,3 +1,3 @@
 node_modules
 reviews.json
-dataset/*.json
+dataset*/*.json
